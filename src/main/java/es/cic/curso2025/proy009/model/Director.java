@@ -3,7 +3,7 @@ package es.cic.curso2025.proy009.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -29,17 +29,17 @@ public class Director {
     private String nombre;
 
     
-    @Column(name= "edad")
+    @Column(name= "edad", nullable = false)
     private int edad;
 
-    @Column(name = "numero_peliculas")
+    @Column(name = "numero_peliculas", nullable = false)
     private long numeroPeliculas;
 
     @Column(name = "nacionalidad")
     private String nacionalidad;
 
     @JsonManagedReference
-    @OneToMany(cascade ={ CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "director", cascade ={ CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     private List<Pelicula> peliculas = new ArrayList<>();
 
 
