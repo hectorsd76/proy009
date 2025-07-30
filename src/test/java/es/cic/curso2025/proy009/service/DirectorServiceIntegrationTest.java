@@ -173,6 +173,40 @@ public class DirectorServiceIntegrationTest {
 
     @Test
     void actualizarDirector(){
-        
+        Pelicula pelicula1 = new Pelicula();
+        pelicula1.setAnio(2003);
+        pelicula1.setGenero("Drama");
+        pelicula1.setNombre("Purple");
+
+        List<Pelicula> peliculasGuardadas = List.of(pelicula1);
+
+        Director director = new Director();
+        director.setEdad(25);
+        director.setNacionalidad("Española");
+        director.setNombre("Oscar");
+        director.setNumeroPeliculas(23);
+        director.setPeliculas(peliculasGuardadas);
+
+        Director directorCreado = directorService.crearDirectorPelicula(director, peliculasGuardadas);
+        Long idObtenido = directorCreado.getId();
+
+        //  Ids de las películas antes de actualizar
+        List<Long> idsAntes = directorCreado.getPeliculas().stream()
+            .map(Pelicula::getId)
+            .toList();
+
+        Director directorNuevo = new Director();
+        directorNuevo.setId(idObtenido);
+        directorNuevo.setEdad(21);
+
+        Director directorActualizado = directorService.update(directorNuevo, peliculasGuardadas);
+
+        // Ids de las películas después de actualizar
+        List<Long> idsDespues = directorActualizado.getPeliculas().stream()
+            .map(Pelicula::getId)
+            .toList();
+
+        assertEquals(21, directorActualizado.getEdad());
+        assertEquals(idsAntes, idsDespues); 
     }
 }
