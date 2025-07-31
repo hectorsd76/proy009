@@ -27,10 +27,7 @@ public class DirectorService {
 
         List<Pelicula> peliculasGuardadas = peliculas.stream()
             .map(pelicula -> {
-                pelicula.setAnio(pelicula.getAnio());
                 pelicula.setDirector(director);
-                pelicula.setGenero(pelicula.getGenero());
-                pelicula.setNombre(pelicula.getNombre());
                 return peliculaRepository.save(pelicula);
             })
             .collect(Collectors.toList());
@@ -63,36 +60,37 @@ public class DirectorService {
 
 @Transactional
 public Director update(Director director, List<Pelicula> peliculas) {
-    Director directorCreado = directorRepository.findById(director.getId()).orElse(null);
-    if (directorCreado == null) {
+    Director directorExistente = directorRepository.findById(director.getId()).orElse(null);
+    if (directorExistente == null) {
         return null;
     }
 
     // Actualiza los campos del director
-    directorCreado.setNombre(director.getNombre());
-    directorCreado.setEdad(director.getEdad());
-    directorCreado.setNacionalidad(director.getNacionalidad());
-    directorCreado.setNumeroPeliculas(director.getNumeroPeliculas());
+    directorExistente.setNombre(director.getNombre());
+    directorExistente.setEdad(director.getEdad());
+    directorExistente.setNacionalidad(director.getNacionalidad());
+    directorExistente.setNumeroPeliculas(director.getNumeroPeliculas());
 
     // Asocia cada película al director y la guarda
     List<Pelicula> peliculasActualizadas = peliculas.stream()
         .map(p -> {
+        if (p.getId() != null) {
             Pelicula peliculaExistente = peliculaRepository.findById(p.getId()).orElse(null);
             if (peliculaExistente != null) {
                 peliculaExistente.setNombre(p.getNombre());
                 peliculaExistente.setAnio(p.getAnio());
                 peliculaExistente.setGenero(p.getGenero());
-                peliculaExistente.setDirector(directorCreado);
+                peliculaExistente.setDirector(directorExistente);
                 return peliculaRepository.save(peliculaExistente);
-            } else {
-                p.setDirector(directorCreado);
-                return peliculaRepository.save(p);
             }
+        }
+        p.setDirector(directorExistente);
+        return peliculaRepository.save(p);
         })
         .collect(Collectors.toList());
 
-    directorCreado.setPeliculas(peliculasActualizadas);
+    directorExistente.setPeliculas(peliculasActualizadas);
 
-    return directorRepository.save(directorCreado);
+    return directorRepository.save(directorExistente);
 }
 }
