@@ -131,7 +131,6 @@ public class DirectorControllerIntegrationTest {
                 .content(directorJson))
                 .andExpect(status().isOk());
 
-        // Llama al endpoint GET /Director y verifica que el director está en la lista
         mockMvc.perform(get("/Director"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].nombre").value("Christopher Nolan"))
@@ -163,7 +162,7 @@ public class DirectorControllerIntegrationTest {
 
         String directorJson = objectMapper.writeValueAsString(director);
 
-        // Crea el director y obtiene el ID usando MvcResult
+        // Crea el director y obtiene el ID 
         MvcResult result = mockMvc.perform(post("/Director")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(directorJson))
@@ -202,7 +201,7 @@ public class DirectorControllerIntegrationTest {
 
         String directorJson = objectMapper.writeValueAsString(director);
 
-        // Crea el director y obtiene el ID usando MvcResult
+        // Crea el director y obtiene el ID 
         MvcResult resultado = mockMvc.perform(post("/Director")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(directorJson))
@@ -212,7 +211,7 @@ public class DirectorControllerIntegrationTest {
         String resultadoPost = resultado.getResponse().getContentAsString();
         Director directorCreado = objectMapper.readValue(resultadoPost, Director.class);
 
-        // Prepara nuevos datos para actualizar
+      
         Pelicula peliculaActualizada = new Pelicula();
         peliculaActualizada.setId(directorCreado.getPeliculas().get(0).getId());
         peliculaActualizada.setNombre("Inception Updated");
@@ -234,7 +233,7 @@ public class DirectorControllerIntegrationTest {
 
         String directorUpdateJson = objectMapper.writeValueAsString(directorUpdate);
 
-        // Realiza el update y obtiene el resultado con MvcResult
+        //  update y obtiene el resultado 
         MvcResult resultadoActualizado = mockMvc.perform(put("/Director/" + directorCreado.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(directorUpdateJson))
